@@ -9,7 +9,7 @@ class UserManager(BaseUserManager):
         """ Creates and saves a User with the given email and password. """
         if not email:
             raise ValueError('Enter a valid email address')
-        if not paassword:
+        if not password:
             raise ValueError('Enter a password')
 
         user = self.model(email=self.normalize_email(email))
