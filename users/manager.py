@@ -5,7 +5,7 @@ class UserManager(BaseUserManager):
 
     use_in_migrations = True
 
-    def create_user(self, email, password=None):
+    def create_user(self, email, password=None,):
         """ Creates and saves a User with the given email and password. """
         if not email:
             raise ValueError('Enter a valid email address')
@@ -23,5 +23,6 @@ class UserManager(BaseUserManager):
         user = self.create_user(email, password=password)
         user.is_staff = True
         user.is_superuser = True
+        user.is_active = True
         user.save(using=self._db)
         return user
