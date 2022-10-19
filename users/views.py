@@ -25,9 +25,9 @@ def register(request):
         if form.is_valid():
             form.save()
             email = form.cleaned_data.get('email')
-            messages.success(request, f'Account Created for {email}!')
+            messages.success(request, f'Account Created!')
 
-            return redirect('blog-home')
+            return redirect('blog-login')
     else:
         form = UserCreationForm()
 

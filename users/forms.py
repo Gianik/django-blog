@@ -12,14 +12,8 @@ class UserCreationForm(UserCreationForm):
         model = User
         fields = ("email", "password1", "password2")
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        # valid_email = False
-        if User.objects.filter(email=email).exists():
-            raise ValidationError("Email already exists")
-        else:
-            try:
-                validate_email(email)
+    # def clean_email(self):
+    #     email = self.cleaned_data['email']
 
-            except ValidationError as e:
-                raise ValidationError("Bad Email")
+    #     if User.objects.filter(email=email).exists():
+    #         raise ValidationError("Email already exists")
