@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'posts.apps.PostsConfig',
     'comments.apps.CommentsConfig',
     'likeunlike.apps.LikeunlikeConfig',
+    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -135,3 +136,5 @@ AUTHENTICATION_BACKENDS = (
 
 
 AUTH_USER_MODEL = "users.User"  # new
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
