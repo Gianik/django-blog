@@ -10,10 +10,18 @@ class UserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("email", "password1", "password2")
+        fields = ("email", 'first_name', 'last_name', "password1", "password2")
 
     # def clean_email(self):
     #     email = self.cleaned_data['email']
 
     #     if User.objects.filter(email=email).exists():
     #         raise ValidationError("Email already exists")
+
+
+class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'avatar']

@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 # from django.contrib.auth.forms import UserCreationForm
 
-from .forms import UserCreationForm
+from .forms import UserCreationForm, UserUpdateForm
 from posts.models import Post
 from django.contrib import messages
 
 
 def home(request):
+    # import pdb
+    # pdb.set_trace()
     context = {
         'posts': Post.objects.all(),
     }
@@ -15,7 +17,9 @@ def home(request):
 
 
 def about(request):
-    return render(request, 'users/about.html')
+    u_form = UserUpdateForm()
+
+    return render(request, 'users/profile.html', {'u_form': u_form})
 
 
 def register(request):
@@ -33,5 +37,8 @@ def register(request):
 
     return render(request, 'users/register.html', {'form': form})
 
+
+# def profile(request):
+#     return render(request, 'users/profile.html')
 
 # Create your views here.
