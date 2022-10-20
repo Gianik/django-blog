@@ -3,11 +3,12 @@ from django.contrib.auth import views as auth_views
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from users.views import RegisterView, HomeView
 
 urlpatterns = [
-    path('', views.home, name='blog-home'),
+    path('', HomeView.as_view(), name='blog-home'),
     path('about/', views.about, name='blog-about'),
-    path('register/', views.register, name="blog-register"),
+    path('register/', RegisterView.as_view(), name="blog-register"),
     # path('profile/', views.profile, name="blog-profile"),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'),
          name="blog-login"),
