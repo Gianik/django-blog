@@ -6,15 +6,8 @@ from .forms import UserCreationForm, UserUpdateForm
 from posts.models import Post
 from django.contrib import messages
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 
-
-# def home(request):
-#     # import pdb
-#     # pdb.set_trace()
-#     context = {
-#         'posts': Post.objects.all(),
-#     }
-#     return render(request, 'users/home.html', context)
 
 class HomeView(TemplateView):
     #     # import pdb
@@ -28,17 +21,26 @@ class HomeView(TemplateView):
         return render(request, self.template_name, context)
 
 
-def about(request):
-    if request.method == 'POST':
-        u_form = UserUpdateForm(
-            request.POST, request.FILES, instance=request.user)
+class UpdateProfileView(TemplateView):
+    template_name = 'users/profile.html'
+    u_form = UserUpdateForm
 
-    else:
-        u_form = UserUpdateForm(instance=request.user)
+    def get(self, request,  *args, **kwargs):
+        context = {}
+        u_form = self.u_form(instance=request.user)
+        return render(request, self.template_name, {'u_form': u_form})
 
-    # if u_form.is_valid():
-
-    return render(request, 'users/profile.html', {'u_form': u_form})
+    def post(self, request,  *args, **kwargs):
+        # import pdb
+        # pdb.set_trace()
+        u_form = self.u_form(request.POST, instance=request.user)
+        if u_form.is_valid():
+            u_form.save()
+            email = u_form.cleaned_data.get('email')
+            messages.success(request, 'Account Updated! for {}'.format(email))
+            return redirect('blog-about')
+        else:
+            return render(request, self.template_name, {'u_form': u_form})
 
 
 class RegisterView(TemplateView):
@@ -53,8 +55,8 @@ class RegisterView(TemplateView):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request,  *args, **kwargs):
-        import pdb
-        pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
         form = self.form(request.POST)
         if form.is_valid():
             form.save()
@@ -63,25 +65,3 @@ class RegisterView(TemplateView):
             return redirect('blog-login')
         else:
             return render(request, self.template_name, {'form': form})
-
-
-# def register(request):
-#     if request.method == 'POST':
-#         form = UserCreationForm(request.POST)
-
-#         if form.is_valid():
-#             form.save()
-#             email = form.cleaned_data.get('email')
-#             messages.success(request, f'Account Created!')
-
-#             return redirect('blog-login')
-#     else:
-#         form = UserCreationForm()
-
-#     return render(request, 'users/register.html', {'form': form})
-
-
-# def profile(request):
-#     return render(request, 'users/profile.html')
-
-# Create your views here.
