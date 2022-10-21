@@ -22,6 +22,10 @@ class UserCreationForm(UserCreationForm):
 class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField(required=True)
 
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['email'].disabled = True
+
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'avatar']

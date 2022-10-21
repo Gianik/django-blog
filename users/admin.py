@@ -14,7 +14,7 @@ class UserAdmin(UserAdmin):
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions')
     list_display = ('email', 'first_name', 'last_name', 'date_joined')
-    search_fields = ('email', 'first_name', 'last_name', 'name',
+    search_fields = ('email', 'first_name', 'last_name',
                      'date_joined', 'is_active', 'is_staff', 'is_superuser',)
 
     fieldsets = (
