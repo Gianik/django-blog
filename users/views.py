@@ -5,20 +5,17 @@ from django.http import HttpResponse
 from .forms import UserCreationForm, UserUpdateForm
 from posts.models import Post
 from django.contrib import messages
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.contrib.auth.decorators import login_required
 
 
-class HomeView(TemplateView):
+class HomeView(ListView):
     #     # import pdb
     #     # pdb.set_trace()
+    model = Post
     template_name = 'users/home.html'
-
-    def get(self, request, *args, **kwargs):
-        context = {
-            'posts': Post.objects.all(),
-        }
-        return render(request, self.template_name, context)
+    context_object_name = 'posts'
+    ordering = ['-date_created']
 
 
 class UpdateProfileView(TemplateView):
