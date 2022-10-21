@@ -6,6 +6,10 @@
             <div class="article-metadata">
             <a class="mr-2" href="#">{{ object.author }}</a>
             <small class="text-muted">{{ object.date_created }}</small>
+            {% if object.author == user or user.is_superuser %}
+                <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'blog-update' object.id %}">Update</a>
+                <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'blog-delete' object.id %}">Delete</a>
+            {% endif %}
             <button class="btn btn-primary">Like </button>
             <button type="button" class="btn btn-danger">Dislike</button>
             </div>
