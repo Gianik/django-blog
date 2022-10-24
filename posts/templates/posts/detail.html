@@ -12,9 +12,20 @@
             {% endif %}
             <button class="btn btn-primary">Like </button>
             <button type="button" class="btn btn-danger">Dislike</button>
+            <a href="{% url 'blog-comment-create' object.id %}"><button type="button" class="btn btn-dark">New Comment</button></a>
             </div>
             <h2 class="article-title">{{ object.title }}</h2>
             <p class="article-content">{{ object.content }}</p>
+            <p class="article-content">{{ object.id }}</p>
+            <div class="article-metadata">
+            </div>
+            <div class="article-metadata">
+                <h3>Comments:</h3>
+                {% for comment in comments %}
+                    Author:<small class="text-muted">{{ comment.author }}</small>
+                    <p><a class="mr-2" href="#">{{ comment.text }}</a></p>
+                {% endfor %} 
+            </div>
         </div>
     </article>
 
