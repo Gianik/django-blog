@@ -24,6 +24,10 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 
         # Get all comments  related to the Post
         context['comments'] = Comments.objects.filter(post=post_object)
+        context['likes'] = Likeunlike.objects.filter(post=post_object)
+        context['is_liked'] = Likeunlike.objects.filter(post=post_object).filter(
+            id=self.request.user.id).exists()
+
         return context
 
 
