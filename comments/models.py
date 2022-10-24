@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from users.models import User
 from posts.models import Post
+from django.urls import reverse
 
 
 class Comments(models.Model):
@@ -15,4 +16,7 @@ class Comments(models.Model):
 
     def __str__(self):
         return self.text
+
+    def get_absolute_url(self):
+        return reverse('blog-detail', kwargs={'pk': self.post.id})
 # Create your models here.
