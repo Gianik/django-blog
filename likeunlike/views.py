@@ -5,12 +5,12 @@ from django.views.generic import TemplateView
 from django.views.generic import DetailView
 
 
-class LikeUnlikeView(DetailView):
+# class LikeUnlikeView(DetailView):
 
-    model = Likeunlike
+#     model = Likeunlike
 
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
+#     def get_context_data(self, **kwargs):
+#         data = super().get_context_data(**kwargs)
 
 
 # Create your views here.
