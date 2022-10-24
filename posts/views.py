@@ -7,6 +7,7 @@ from django.views.generic import (
 from .models import Post
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from comments.models import Comments
+from likeunlike.models import Likeunlike
 
 
 class PostDetailView(LoginRequiredMixin, DetailView):
