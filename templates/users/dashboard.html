@@ -1,0 +1,20 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+      <div class="media">
+        <img class="rounded-circle account-img" src="{{ user.avatar.url }}">
+        <div class="media-body">
+          <h2 class="account-heading">{{ user.email }}</h2>
+          <p class="text-secondary">{{ user.first_name}} {{user.last_name}}</p>
+        </div>
+      </div>
+      <h3>User Blogs:</h3>
+        {% for blog in blogs %}
+        <div class="article-metadata">
+            <a href="{% url 'blog-detail' blog.id %}"><p class="text-secondary">{{ blog.title}}</p></a>
+            <p class="text-secondary">{{ blog.id}}</p>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

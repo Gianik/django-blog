@@ -127,7 +127,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-class LikeunlikeView(TemplateView):
+class LikeunlikeView(LoginRequiredMixin, TemplateView):
     # import pdb
     # pdb.set_trace()
     model = Post

@@ -7,6 +7,8 @@ from posts.models import Post
 from django.contrib import messages
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth.decorators import login_required
+from .models import User
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 class HomeView(ListView):
@@ -62,3 +64,19 @@ class RegisterView(TemplateView):
             return redirect('blog-login')
         else:
             return render(request, self.template_name, {'form': form})
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    model = User
+    template_name = 'users/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+
+        context = super(TemplateView, self).get_context_data()
+        # this contain the object that the view is operating upon
+        # user_object = self.object
+        # context['object'] = user_object
+
+        context['blogs'] = Post.objects.filter(author=self.request.user.id)
+
+        return context

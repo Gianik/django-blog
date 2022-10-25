@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import RegisterView, HomeView, UpdateProfileView
+from users.views import RegisterView, HomeView, UpdateProfileView, DashboardView
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -15,6 +15,8 @@ urlpatterns = [
          name="blog-login"),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'),
          name="blog-logout"),
+    path('dashboard/', DashboardView.as_view(),
+         name="blog-dashboard"),
 
 ]
 
