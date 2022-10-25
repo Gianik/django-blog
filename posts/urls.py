@@ -13,7 +13,7 @@ from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    #path('', login_required(HomeView.as_view()), name='blog-home'),
+
     path('<int:pk>/', login_required(PostDetailView.as_view()), name='blog-detail'),
     path('new/', PostCreateView.as_view(), name='blog-create'),
     path('<int:pk>/update/', login_required(PostUpdateView.as_view()),
@@ -26,6 +26,6 @@ urlpatterns = [
          name='blog-comment-update'),
     path('comment/delete/<int:pk>', login_required(CommentDeleteView.as_view()),
          name='blog-comment-delete'),
-    #     path('like/change/<int:pk>', login_required(LikeunlikeView.as_view()),
-    #     name='blog-likeunlike')
+    path('like/change/<int:pk>', login_required(LikeunlikeView.as_view()),
+         name='blog-likeunlike')
 ]
