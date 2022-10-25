@@ -11,12 +11,10 @@
                 <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'blog-delete' object.id %}">Delete</a>
             {% endif %}
 
-            {% if is_liked == false  %}
-                <button class="btn btn-primary" name="btn">Like</button>
-            {% elif is_liked == true %}
+            {% if is_liked  %}
                 <button type="button" class="btn btn-danger" name="btn">Dislike</button>
-            {% else %}
-                
+            {% else  %}
+                <button class="btn btn-primary" name="btn">Like</button>
             {% endif %}
             <a href="{% url 'blog-comment-create' object.id %}"><button type="button" class="btn btn-dark">New Comment</button></a>
             </div>
