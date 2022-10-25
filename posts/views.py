@@ -1,10 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView)
-from .models import Post, Comments, Likeunlike
+    DeleteView,
+    TemplateView)
+from .models import Post, Comments
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
@@ -17,14 +19,17 @@ class PostDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
 
         context = super(PostDetailView, self).get_context_data()
-        post_object = self.object  # this contain the object that the view is operating upon
+        # this contain the object that the view is operating upon
+        post_object = self.object
         context['object'] = post_object
 
-        # Get all comments  related to the Post
+        liked = False
+        if post_object.likes.filter(id=self.request.user.id).exists():
+            liked = True
+
         context['comments'] = Comments.objects.filter(post=post_object)
-        context['likes'] = Likeunlike.objects.filter(post=post_object)
-        context['is_liked'] = Likeunlike.objects.filter(post=post_object).filter(
-            id=self.request.user.id).exists()
+        context['likes'] = post_object.number_of_likes()
+        context['is_liked'] = liked
 
         return context
 
@@ -94,7 +99,7 @@ class UpdateCommentView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        #form.instance.post = get_object_or_404(Comments, id=self.request.post.id)
+        # form.instance.post = get_object_or_404(Comments, id=self.request.post.id)
 
         return super().form_valid(form)
 
@@ -110,7 +115,10 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     #     # pdb.set_trace()
     model = Comments
     template_name = 'posts/comment_delete.html'
-    success_url = '/'
+
+    def get_success_url(self):
+        post = self.object.post
+        return reverse_lazy('blog-detail', kwargs={'pk': post.id})
 
     def test_func(self):
         comments = self.get_object()
@@ -119,4 +127,21 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-# Create your views here.
+class LikeunlikeView(TemplateView):
+    # import pdb
+    # pdb.set_trace()
+    model = Post
+
+    def post(self, request,  *args, **kwargs):
+
+        self_object = get_object_or_404(Post, id=self.kwargs['pk'])
+        post_object = self_object
+        post_id = self.kwargs['pk']
+        if post_object.likes.filter(id=request.user.id).exists():
+            post_object.likes.remove(request.user)
+        else:
+            post_object.likes.add(request.user)
+
+        return redirect('blog-detail', post_id)
+
+        # Create your views here.

@@ -10,18 +10,19 @@
                 <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'blog-update' object.id %}">Update</a>
                 <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'blog-delete' object.id %}">Delete</a>
             {% endif %}
-
-            {% if is_liked  %}
-                <button type="button" class="btn btn-danger" name="btn">Dislike</button>
-            {% else  %}
-                <button class="btn btn-primary" name="btn">Like</button>
-                
-            {% endif %}
+            <form action="{% url 'blog-likeunlike' object.id %}" method="POST">
+                {% csrf_token %}
+                {% if is_liked  %}
+                    <button type="submit" class="btn btn-danger btn-sm" name="btn">Dislike</button>
+                {% else  %}
+                    <button type="submit" class="btn btn-primary btn-sm" name="btn">Like</button>
+                    
+                {% endif %}
+            </form>
             <a href="{% url 'blog-comment-create' object.id %}"><button type="button" class="btn btn-dark">New Comment</button></a>
             </div>
             <h2 class="article-title">{{ object.title }}</h2>
             <p class="article-content">{{ object.content }}</p>
-            <p class="article-content">{{ object.id }}</p>
             <div class="article-metadata">
             </div>
             <div class="article-metadata">
@@ -35,9 +36,14 @@
                     <p><a class="mr-2" >{{ comment.text }}</a></p>
                     
                 {% endfor %} 
-                    <p class="article-content">{{ is_liked }}</p>
-                    Like Number:<small class="article-content">{{ likes.count }}</small>
+
  
+            </div>
+            <div class="article-metadata">
+                <h3>Like Number:</h3>
+                <h4 class="article-content">{{ likes }}</h4>
+                
+                
             </div>
         </div>
     </article>

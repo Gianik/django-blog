@@ -8,6 +8,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    likes = models.ManyToManyField(User, related_name='blog_likes')
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
@@ -16,6 +17,9 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('blog-detail', kwargs={'pk': self.pk})
+
+    def number_of_likes(self):
+        return self.likes.count()
 
 
 class Comments(models.Model):
@@ -33,13 +37,5 @@ class Comments(models.Model):
     def get_absolute_url(self):
         return reverse('blog-detail', kwargs={'pk': self.post.id})
 
-
-class Likeunlike(models.Model):
-    like = models.BooleanField(default=False)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    post = models.ForeignKey(Post, related_name='likes',
-                             on_delete=models.CASCADE, null=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
 
 # Create your models here.
