@@ -1,6 +1,12 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from .views import PostDetailView, PostCreateView, PostUpdateView, PostDeleteView
+from .views import (PostDetailView,
+                    PostCreateView,
+                    PostUpdateView,
+                    PostDeleteView,
+                    CreateCommentView,
+                    UpdateCommentView,
+                    CommentDeleteView)
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
@@ -13,4 +19,10 @@ urlpatterns = [
          name='blog-update'),
     path('<int:pk>/delete/', login_required(PostDeleteView.as_view()),
          name='blog-delete'),
+    path('comment/<int:post_id>/', CreateCommentView.as_view(),
+         name='blog-comment-create'),
+    path('comment/update/<int:pk>/', UpdateCommentView.as_view(),
+         name='blog-comment-update'),
+    path('comment/delete/<int:pk>', login_required(CommentDeleteView.as_view()),
+         name='blog-comment-delete')
 ]

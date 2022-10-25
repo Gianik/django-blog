@@ -17,4 +17,29 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('blog-detail', kwargs={'pk': self.pk})
 
+
+class Comments(models.Model):
+    text = models.CharField(max_length=100)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE)
+    post = models.ForeignKey(
+        Post, related_name='comments', on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.text
+
+    def get_absolute_url(self):
+        return reverse('blog-detail', kwargs={'pk': self.post.id})
+
+
+class Likeunlike(models.Model):
+    like = models.BooleanField(default=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    post = models.ForeignKey(Post, related_name='likes',
+                             on_delete=models.CASCADE, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
 # Create your models here.
