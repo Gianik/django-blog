@@ -78,5 +78,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         # context['object'] = user_object
 
         context['blogs'] = Post.objects.filter(author=self.request.user.id)
+        context['liked_blogs'] = Post.objects.filter(likes=self.request.user)
 
         return context
