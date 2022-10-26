@@ -93,3 +93,20 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context['liked_blogs'] = Post.objects.filter(likes=self.request.user)
 
         return context
+
+
+# High Level User flow
+
+# user login
+# user has to input username and password
+# backend check if valid or not
+# if valid proceed to next page else prompt error
+# if there is error ask again for another input
+
+# Low Level User flow
+
+# create a template view
+# create a form
+# request.Post
+# redirect to next page
+# show error and ask for another submit
