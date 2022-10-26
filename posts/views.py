@@ -6,7 +6,7 @@ from django.views.generic import (
 from .models import Post, Comments
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import PostCreationForm
+from .forms import PostCreationForm, CommentCreationForm
 
 
 class PostDetailView(LoginRequiredMixin, TemplateView):
@@ -67,13 +67,8 @@ class PostCreateView(LoginRequiredMixin, TemplateView):
 
             form.save()
             return redirect('blog-home')
-            # return render(request, self.template_name, {'form': form})
         else:
             return render(request, self.template_name, {'form': form})
-
-    # def form_valid(self, form):
-    #     form.instance.author = self.request.user
-    #     return super().form_valid(form)
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -131,17 +126,33 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return redirect('blog-detail', self.kwargs['pk'])
 
 
-class CreateCommentView(LoginRequiredMixin, CreateView):
+class CreateCommentView(LoginRequiredMixin, TemplateView):
 
+    #     # import pdb
+    #     # pdb.set_trace()
     model = Comments
+    form = CommentCreationForm
     template_name = 'posts/post_form_comment.html'
-    fields = ['text']
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
+    def get(self, request,  *args, **kwargs):
+
+        if not request.user.is_authenticated:
+            return redirect('blog-login')
+
+        form = self.form
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request,  *args, **kwargs):
+
+        form = self.form(request.POST)
+        form.instance.author = request.user
         form.instance.post = get_object_or_404(Post, id=self.kwargs['post_id'])
+        if form.is_valid():
 
-        return super().form_valid(form)
+            form.save()
+            return redirect('blog-detail', self.kwargs['post_id'])
+        else:
+            return render(request, self.template_name, {'form': form})
 
 
 class UpdateCommentView(LoginRequiredMixin, UpdateView):
