@@ -1,9 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import (
-    UpdateView,
-    TemplateView)
+from django.views.generic import TemplateView
 from .models import Post, Comments
-from django.urls import reverse, reverse_lazy
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import PostForm, CommentForm
 
