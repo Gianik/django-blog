@@ -81,7 +81,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(PostDeleteView, self).get_context_data()  # get context
 
-        # find the post object that will be deleted
+       # get the post object to display the post title in the template
         post_object = get_object_or_404(Post, id=self.kwargs['pk'])
         context['object'] = post_object
 
@@ -90,7 +90,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def post(self, request,  *args, **kwargs):
         # import pdb
         # pdb.set_trace()
-
+        # find the post object that will be deleted
         self_object = get_object_or_404(Post, id=self.kwargs['pk'])
         self_object.delete()
 
@@ -132,21 +132,41 @@ class UpdateCommentView(LoginRequiredMixin, UpdateView):
         return False
 
 
-class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     #     # import pdb
     #     # pdb.set_trace()
     model = Comments
     template_name = 'posts/comment_delete.html'
 
-    def get_success_url(self):
-        post = self.object.post
-        return reverse_lazy('blog-detail', kwargs={'pk': post.id})
-
     def test_func(self):
-        comments = self.get_object()
+        comments = get_object_or_404(Comments, id=self.kwargs['pk'])
         if self.request.user == comments.author or self.request.user.is_superuser:
             return True
         return False
+
+    def get_context_data(self, **kwargs):
+        context = super(CommentDeleteView,
+                        self).get_context_data()  # get context
+
+       # get the post object to display the post title in the template
+        comment_object = get_object_or_404(Comments, id=self.kwargs['pk'])
+        context['object'] = comment_object
+
+        return context
+
+    def post(self, request,  *args, **kwargs):
+        # import pdb
+        # pdb.set_trace()
+        # find the comment object that will be deleted
+        comment_object = get_object_or_404(Comments, id=self.kwargs['pk'])
+        comment_object.delete()
+
+        return redirect('blog-detail', comment_object.post.id)
+
+    def handle_no_permission(self):
+        comment_object = comment_object = get_object_or_404(
+            Comments, id=self.kwargs['pk'])
+        return redirect('blog-detail',  comment_object.post.id)
 
 
 class LikeunlikeView(LoginRequiredMixin, TemplateView):
