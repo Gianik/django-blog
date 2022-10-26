@@ -34,7 +34,10 @@ class UpdateProfileView(TemplateView):
     u_form = UserUpdateForm
 
     def get(self, request,  *args, **kwargs):
-        context = {}
+
+        if not request.user.is_authenticated:
+            return redirect('blog-login')
+
         u_form = self.u_form(instance=request.user)
         return render(request, self.template_name, {'u_form': u_form})
 

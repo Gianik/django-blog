@@ -62,20 +62,42 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+    def handle_no_permission(self):
+        return redirect('blog-detail', self.kwargs['pk'])
 
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     #     # import pdb
     #     # pdb.set_trace()
     model = Post
     template_name = 'posts/delete.html'
 
-    success_url = '/'
-
     def test_func(self):
-        post = self.get_object()
+        post = get_object_or_404(Post, id=self.kwargs['pk'])
         if self.request.user == post.author or self.request.user.is_superuser:
             return True
         return False
+
+    def get_context_data(self, **kwargs):
+        context = super(PostDeleteView, self).get_context_data()  # get context
+
+        # find the post object that will be deleted
+        post_object = get_object_or_404(Post, id=self.kwargs['pk'])
+        context['object'] = post_object
+
+        return context
+
+    def post(self, request,  *args, **kwargs):
+        # import pdb
+        # pdb.set_trace()
+
+        self_object = get_object_or_404(Post, id=self.kwargs['pk'])
+        self_object.delete()
+
+        return redirect('blog-home')
+
+    def handle_no_permission(self):
+        return redirect('blog-detail', self.kwargs['pk'])
 
 
 class CreateCommentView(LoginRequiredMixin, CreateView):
