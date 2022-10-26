@@ -1,16 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (
-    DetailView,
     CreateView,
     UpdateView,
-    DeleteView,
     TemplateView)
 from .models import Post, Comments
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .forms import PostCreationForm
 
 
-class PostDetailView(LoginRequiredMixin, DetailView):
+class PostDetailView(LoginRequiredMixin, TemplateView):
     #     # import pdb
     #     # pdb.set_trace()
     model = Post
@@ -20,7 +19,7 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 
         context = super(PostDetailView, self).get_context_data()
         # this contain the object that the view is operating upon
-        post_object = self.object
+        post_object = get_object_or_404(Post, id=self.kwargs['pk'])
         context['object'] = post_object
 
         liked = False
@@ -34,15 +33,47 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+# class PostCreateView(LoginRequiredMixin, CreateView):
+#     #     # import pdb
+#     #     # pdb.set_trace()
+#     model = Post
+#     fields = ['title', 'content']
+
+#     def form_valid(self, form):
+#         form.instance.author = self.request.user
+#         return super().form_valid(form)
+
+
+class PostCreateView(LoginRequiredMixin, TemplateView):
     #     # import pdb
     #     # pdb.set_trace()
     model = Post
-    fields = ['title', 'content']
+    form = PostCreationForm
+    template_name = 'posts/post_form.html'
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+    def get(self, request,  *args, **kwargs):
+
+        if not request.user.is_authenticated:
+            return redirect('blog-login')
+
+        form = self.form
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request,  *args, **kwargs):
+
+        form = self.form(request.POST)
+        form.instance.author = request.user
+        if form.is_valid():
+
+            form.save()
+            return redirect('blog-home')
+            # return render(request, self.template_name, {'form': form})
+        else:
+            return render(request, self.template_name, {'form': form})
+
+    # def form_valid(self, form):
+    #     form.instance.author = self.request.user
+    #     return super().form_valid(form)
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
