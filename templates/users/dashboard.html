@@ -15,7 +15,7 @@
             <a href="{% url 'blog-detail' blog.id %}"><p class="text-secondary">{{ blog.title}}</p></a>
         </div>
         {% endfor %}
-        <h3>My Liked Blogs:</h3>
+      <h3>My Liked Blogs:</h3>
         {% for liked_blog in liked_blogs %}
         <div class="article-metadata">
             <a href="{% url 'blog-detail' liked_blog.id %}"><p class="text-secondary">{{ liked_blog.title}}</p></a>

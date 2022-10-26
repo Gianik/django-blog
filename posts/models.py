@@ -21,6 +21,9 @@ class Post(models.Model):
     def number_of_likes(self):
         return self.likes.count()
 
+    class Meta:
+        ordering = ['-date_created']
+
 
 class Comments(models.Model):
     text = models.CharField(max_length=100)

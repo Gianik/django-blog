@@ -11,13 +11,22 @@ from .models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
-class HomeView(ListView):
+class HomeView(TemplateView):
     #     # import pdb
     #     # pdb.set_trace()
+
     model = Post
     template_name = 'users/home.html'
-    context_object_name = 'posts'
     ordering = ['-date_created']
+
+    def get_context_data(self, **kwargs):
+
+        context = super(HomeView, self).get_context_data()
+        # this contain the object that the view is operating upon
+
+        context['posts'] = Post.objects.all()
+
+        return context
 
 
 class UpdateProfileView(TemplateView):
@@ -37,7 +46,7 @@ class UpdateProfileView(TemplateView):
             u_form.save()
             email = u_form.cleaned_data.get('email')
             messages.success(request, 'Account Updated! for {}'.format(email))
-            return redirect('blog-about')
+            return redirect('blog-dashboard')
         else:
             return render(request, self.template_name, {'u_form': u_form})
 
