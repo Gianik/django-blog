@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        
+        {% comment %} <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> {% endcomment %}
         <link rel="stylesheet" type="text/css" href="{% static 'users/main.css' %}">
         
         
@@ -33,14 +33,13 @@
                   <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a>
                     <a class="nav-item nav-link" href="{% url 'blog-dashboard' %}">Dashboard</a>
-                    <a class="nav-item nav-link" href="#">Liked Blogs</a>
                     
                   </div>
                   <!-- Navbar Right Side -->
                   <div class="navbar-nav">
                     {% if user.is_authenticated %}
                         <a class="nav-item nav-link" href="{% url 'blog-create' %}">New Blog Post</a>
-                        <a class="nav-item nav-link" href="{% url 'blog-about' %}">Profile</a>
+                        <a class="nav-item nav-link" href="{% url 'blog-profile' %}">Profile</a>
                         <a class="nav-item nav-link" href="{% url 'blog-logout' %}">Logout</a>
                     {% else %}
                         <a class="nav-item nav-link" href="{% url 'blog-login' %}">Login</a>
@@ -63,19 +62,6 @@
                     {% endfor %}
                 {% endif %}
                 {% block content %}{% endblock %}
-              </div>
-              <div class="col-md-4">
-                <div class="content-section">
-                  <h3>Our Sidebar</h3>
-                  <p class='text-muted'>You can put any information here you'd like.
-                    <ul class="list-group">
-                      <li class="list-group-item list-group-item-light">Latest Posts</li>
-                      <li class="list-group-item list-group-item-light">Announcements</li>
-                      <li class="list-group-item list-group-item-light">Calendars</li>
-                      <li class="list-group-item list-group-item-light">etc</li>
-                    </ul>
-                  </p>
-                </div>
               </div>
             </div>
           </main>
