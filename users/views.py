@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
 from .forms import UserCreationForm, UserUpdateForm, UserLoginForm
 from posts.models import Post
 from .models import User
@@ -6,8 +6,6 @@ from django.contrib import messages
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect
-from django.conf import settings
 
 
 class HomeView(TemplateView):
