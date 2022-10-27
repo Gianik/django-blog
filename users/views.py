@@ -37,17 +37,22 @@ class LoginView(TemplateView):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request,  *args, **kwargs):
+        form = self.form(request.POST)
+        if form.is_valid():
+            email = request.POST['email']
+            password = request.POST['password']
 
-        email = request.POST['email']
-        password = request.POST['password']
-        user = authenticate(request, email=email, password=password)
+            user = authenticate(request, email=email, password=password)
 
-        if user is not None:
-            login(request, user)
-            return redirect('blog-home')
+            if user is not None:
+                login(request, user)
+                return redirect('blog-home')
 
+            else:
+                messages.warning(request, 'Invalid Email or Password')
+                return render(request, self.template_name, {'form': form})
         else:
-            return render(request, self.template_name)
+            return render(request, self.template_name, {'form': form})
 
 
 class LogoutView(TemplateView):
@@ -91,13 +96,11 @@ class RegisterView(TemplateView):
     form = UserCreationForm
 
     def get(self, request,  *args, **kwargs):
-        context = {}  # dictionary
         form = self.form()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request,  *args, **kwargs):
-        # import pdb
-        # pdb.set_trace()
+
         form = self.form(request.POST)
         if form.is_valid():
             form.save()
