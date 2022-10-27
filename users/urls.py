@@ -2,20 +2,16 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import RegisterView, HomeView, UpdateProfileView, DashboardView
+from .views import RegisterView, HomeView, UpdateProfileView, DashboardView, LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('', login_required(HomeView.as_view()), name='blog-home'),
     path('about/', UpdateProfileView.as_view(), name='blog-about'),
     path('register/', RegisterView.as_view(), name="blog-register"),
-
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'),
-         name="blog-login"),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'),
-         name="blog-logout"),
-    path('dashboard/', DashboardView.as_view(),
-         name="blog-dashboard"),
+    path('login/', LoginView.as_view(), name="blog-login"),
+    path('logout/', LogoutView.as_view(), name="blog-logout"),
+    path('dashboard/', DashboardView.as_view(), name="blog-dashboard"),
 
 ]
 

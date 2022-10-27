@@ -29,3 +29,10 @@ class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'avatar']
+
+
+class UserLoginForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['email', 'password']

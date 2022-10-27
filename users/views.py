@@ -1,10 +1,13 @@
-from django.shortcuts import render, redirect
-from .forms import UserCreationForm, UserUpdateForm
+from django.shortcuts import render, redirect, reverse
+from .forms import UserCreationForm, UserUpdateForm, UserLoginForm
 from posts.models import Post
 from .models import User
 from django.contrib import messages
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect
+from django.conf import settings
 
 
 class HomeView(TemplateView):
@@ -23,6 +26,39 @@ class HomeView(TemplateView):
         context['posts'] = Post.objects.all()
 
         return context
+
+
+class LoginView(TemplateView):
+    template_name = 'users/login.html'
+    model = User
+    form = UserLoginForm
+
+    def get(self, request,  *args, **kwargs):
+
+        form = self.form()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request,  *args, **kwargs):
+
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('blog-home')
+
+        else:
+            return render(request, self.template_name)
+
+
+class LogoutView(TemplateView):
+    template_name = 'users/logout.html'
+
+    def get(self, request):
+        logout(request)
+        messages.success(request, 'You Have Logout! ')
+        return redirect('blog-login')
 
 
 class UpdateProfileView(TemplateView):
