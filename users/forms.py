@@ -32,7 +32,8 @@ class UserCreationForm(UserCreationForm):
                 "Numbers and Special Characters in First Name is not allowed")
 
         if len(first_name) > 80:
-            raise forms.ValidationError("First Name Input exceeds max length")
+            raise forms.ValidationError(
+                "First Name Input exceeds 80 characters")
         return first_name
 
     def clean_last_name(self,  *args, **kwargs):
@@ -46,8 +47,30 @@ class UserCreationForm(UserCreationForm):
                 "Numbers and Special Characters in Last Name is not allowed")
 
         if len(last_name) > 80:
-            raise forms.ValidationError("Last Name Input exceeds max length")
+            raise forms.ValidationError(
+                "Last Name Input exceeds 80 characters")
         return last_name
+
+    def clean_password1(self,  *args, **kwargs):
+        password1 = self.cleaned_data.get("password1")
+
+        if len(password1) < 8:
+            raise forms.ValidationError(
+                "Password should atleast be 8 characters")
+        if len(password1) > 128:
+            raise forms.ValidationError(
+                "Password should not exceed be 128 characters")
+
+        return password1
+
+    def clean_password2(self,  *args, **kwargs):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if not password1 == password2:
+            raise forms.ValidationError(
+                "Password should atleast be 8 characters")
+
+        return password2
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -67,7 +90,8 @@ class UserUpdateForm(forms.ModelForm):
                 "Numbers and Special Characters in First Name is not allowed")
 
         if len(first_name) > 80:
-            raise forms.ValidationError("First Name Input exceeds max length")
+            raise forms.ValidationError(
+                "First Name Input exceeds 80 characters")
         return first_name
 
     def clean_last_name(self,  *args, **kwargs):
@@ -81,7 +105,8 @@ class UserUpdateForm(forms.ModelForm):
                 "Numbers and Special Characters in Last Name is not allowed")
 
         if len(last_name) > 80:
-            raise forms.ValidationError("Last Name Input exceeds max length")
+            raise forms.ValidationError(
+                "Last Name Input exceeds 80 characters")
         return last_name
 
 
