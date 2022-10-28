@@ -6,7 +6,7 @@ from .views import (PostDetailView,
                     CreateCommentView,
                     UpdateCommentView,
                     CommentDeleteView,
-                    LikeunlikeView)
+                    LikeUnlikeView)
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -23,6 +23,6 @@ urlpatterns = [
          name='blog-comment-update'),
     path('comment/delete/<int:pk>', login_required(CommentDeleteView.as_view()),
          name='blog-comment-delete'),
-    path('like/change/<int:pk>', login_required(LikeunlikeView.as_view()),
+    path('like/change/<int:pk>', login_required(LikeUnlikeView.as_view()),
          name='blog-likeunlike')
 ]

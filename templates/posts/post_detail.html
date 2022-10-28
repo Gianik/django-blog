@@ -28,7 +28,7 @@
             <div class="article-metadata">
                 <h3>Comments:</h3>
                 {% for comment in comments %}
-                    {% if object.author == user or user.is_superuser %}
+                    {% if comment.author == user or user.is_superuser %}
                         <a   href="{% url 'blog-comment-update' comment.id %}"><button type="button" class="btn btn-dark btn-sm" style="font-size: 10px;">Update Comment</button></a>
                         <a   href="{% url 'blog-comment-delete' comment.id %}"><button type="button" class="btn btn-danger btn-sm" style="font-size: 10px;">Delete Comment</button></a>
                     {% endif %}

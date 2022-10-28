@@ -273,7 +273,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return redirect('blog-detail',  comment_object.post.id)
 
 
-class LikeunlikeView(LoginRequiredMixin, TemplateView):
+class LikeUnlikeView(LoginRequiredMixin, TemplateView):
 
     model = Post
 

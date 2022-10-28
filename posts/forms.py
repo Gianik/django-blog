@@ -11,6 +11,9 @@ class PostForm(forms.ModelForm):
     def clean_title(self,  *args, **kwargs):
         title = self.cleaned_data.get("title")
 
+        if not title:
+            raise forms.ValidationError("Plase Input a title")
+
         if len(title) > 100:
             raise forms.ValidationError(
                 "Blog Title Input exceeds max length")
@@ -18,6 +21,9 @@ class PostForm(forms.ModelForm):
 
     def clean_content(self,  *args, **kwargs):
         content = self.cleaned_data.get("content")
+
+        if not content:
+            raise forms.ValidationError("Plase Input a content")
 
         if len(content) > 255:
             raise forms.ValidationError(
@@ -33,6 +39,9 @@ class CommentForm(forms.ModelForm):
 
     def clean_text(self,  *args, **kwargs):
         text = self.cleaned_data.get("text")
+
+        if not text:
+            raise forms.ValidationError("Plase Input a comment text")
 
         if len(text) > 100:
             raise forms.ValidationError(

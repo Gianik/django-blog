@@ -83,7 +83,8 @@ class UpdateProfileView(TemplateView):
         return render(request, self.template_name, {'u_form': u_form})
 
     def post(self, request,  *args, **kwargs):
-        u_form = self.u_form(request.POST, instance=request.user)
+        u_form = self.u_form(request.POST, request.FILES,
+                             instance=request.user)
         u_form.instance.email = self.request.user.email
         if u_form.is_valid():
             u_form.save()
@@ -128,20 +129,3 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         }
 
         return context
-
-
-# High Level User flow
-
-# user login
-# user has to input username and password
-# backend check if valid or not
-# if valid proceed to next page else prompt error
-# if there is error ask again for another input
-
-# Low Level User flow
-
-# create a template view
-# create a form
-# request.Post
-# redirect to next page
-# show error and ask for another submit

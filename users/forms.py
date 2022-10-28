@@ -10,12 +10,20 @@ from django.contrib import messages
 class UserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['password1'].help_text = "<h6>-Password should atleast contain 8 characters</h6>" "<h6><br/> -Password should not all be numeric</h6>"
+
     class Meta:
         model = User
         fields = ("email", 'first_name', 'last_name', "password1", "password2")
 
     def clean_email(self,  *args, **kwargs):
         email = self.cleaned_data.get("email")
+
+        if not email:
+            raise forms.ValidationError("Plase Input your email")
 
         if not "@" in email or not email.endswith(".com"):
             raise forms.ValidationError("This is not a valid email")
@@ -54,18 +62,32 @@ class UserCreationForm(UserCreationForm):
     def clean_password1(self,  *args, **kwargs):
         password1 = self.cleaned_data.get("password1")
 
+        if not password1:
+            raise forms.ValidationError("Plase Input a password")
+
         if len(password1) < 8:
             raise forms.ValidationError(
                 "Password should atleast be 8 characters")
         if len(password1) > 128:
             raise forms.ValidationError(
                 "Password should not exceed be 128 characters")
+        if password1.isdigit():
+            raise forms.ValidationError(
+                "Password cannot all be numbers")
 
         return password1
 
     def clean_password2(self,  *args, **kwargs):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
+
+        if not password2:
+            raise forms.ValidationError("Plase Input a password")
+
+        if password2.isdigit():
+            raise forms.ValidationError(
+                "Password cannot all be numbers")
+
         if not password1 == password2:
             raise forms.ValidationError(
                 "Password and Password Confirmed must be the same")
@@ -113,6 +135,9 @@ class UserUpdateForm(forms.ModelForm):
 class UserLoginForm(forms.Form):
     email = forms.EmailField(max_length=500)
     password = forms.CharField(widget=forms.PasswordInput())
+
+    if not email:
+        raise forms.ValidationError("Plase Input your email")
 
     def clean_email(self,  *args, **kwargs):
         email = self.cleaned_data.get("email")
