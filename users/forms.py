@@ -14,13 +14,43 @@ class UserCreationForm(UserCreationForm):
         model = User
         fields = ("email", 'first_name', 'last_name', "password1", "password2")
 
+    def clean_email(self,  *args, **kwargs):
+        email = self.cleaned_data.get("email")
+
+        if not "@" in email or not email.endswith(".com"):
+            raise forms.ValidationError("This is not a valid email")
+        return email
+
+    def clean_first_name(self,  *args, **kwargs):
+        first_name = self.cleaned_data.get("first_name")
+
+        if not first_name:
+            raise forms.ValidationError("Empty Or Invalid First Name")
+
+        if not first_name.isalpha():
+            raise forms.ValidationError(
+                "Numbers and Special Characters in First Name is not allowed")
+
+        if len(first_name) > 80:
+            raise forms.ValidationError("First Name Input exceeds max length")
+        return first_name
+
+    def clean_last_name(self,  *args, **kwargs):
+        last_name = self.cleaned_data.get("last_name")
+
+        if not last_name:
+            raise forms.ValidationError("Empty Or Invalid Last Name")
+
+        if not last_name.isalpha():
+            raise forms.ValidationError(
+                "Numbers and Special Characters in Last Name is not allowed")
+
+        if len(last_name) > 80:
+            raise forms.ValidationError("Last Name Input exceeds max length")
+        return last_name
+
 
 class UserUpdateForm(forms.ModelForm):
-    # email = forms.EmailField(required=True)
-
-    # def __init__(self, *args, **kwargs):
-    #     super(UserUpdateForm, self).__init__(*args, **kwargs)
-    #     self.fields['email'].disabled = True
 
     class Meta:
         model = User

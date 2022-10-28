@@ -11,11 +11,11 @@ from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
 
-    path('<int:pk>/', login_required(PostDetailView.as_view()), name='blog-detail'),
+    path('<int:pk>/', PostDetailView.as_view(), name='blog-detail'),
     path('new/', PostCreateView.as_view(), name='blog-create'),
-    path('<int:pk>/update/', login_required(PostUpdateView.as_view()),
+    path('update/<int:pk>', login_required(PostUpdateView.as_view()),
          name='blog-update'),
-    path('<int:pk>/delete/', login_required(PostDeleteView.as_view()),
+    path('delete/<int:pk>', login_required(PostDeleteView.as_view()),
          name='blog-delete'),
     path('comment/<int:post_id>/', CreateCommentView.as_view(),
          name='blog-comment-create'),

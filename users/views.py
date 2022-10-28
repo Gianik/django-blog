@@ -13,6 +13,13 @@ class HomeView(TemplateView):
     template_name = 'users/home.html'
     ordering = ['-date_created']
 
+    def get(self, request,  *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('blog-login')
+
+        context = self.get_context_data(**kwargs)
+        return render(request, self.template_name, context)
+
     def get_context_data(self, **kwargs):
 
         context = {
@@ -42,6 +49,7 @@ class LoginView(TemplateView):
 
             if user is not None:
                 login(request, user)
+                messages.success(request, 'Welcome {}'.format(email))
                 return redirect('blog-home')
 
             else:
@@ -51,10 +59,12 @@ class LoginView(TemplateView):
             return render(request, self.template_name, {'form': form})
 
 
-class LogoutView(TemplateView):
+class LogoutView(LoginRequiredMixin, TemplateView):
     template_name = 'users/logout.html'
 
     def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect('blog-login')
         logout(request)
         messages.success(request, 'You Have Logout! ')
         return redirect('blog-login')
@@ -112,10 +122,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
 
-        context = super(TemplateView, self).get_context_data()
-
-        context['blogs'] = Post.objects.filter(author=self.request.user.id)
-        context['liked_blogs'] = Post.objects.filter(likes=self.request.user)
+        context = {
+            "blogs": Post.objects.filter(author=self.request.user.id),
+            "liked_blogs": Post.objects.filter(likes=self.request.user)
+        }
 
         return context
 
