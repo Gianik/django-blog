@@ -68,7 +68,7 @@ class UserCreationForm(UserCreationForm):
         password2 = self.cleaned_data.get("password2")
         if not password1 == password2:
             raise forms.ValidationError(
-                "Password should atleast be 8 characters")
+                "Password and Password Confirmed must be the same")
 
         return password2
 

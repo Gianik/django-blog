@@ -9,7 +9,7 @@ from .forms import PostForm, CommentForm
 class PostDetailView(TemplateView):
 
     model = Post
-    template_name = 'posts/detail.html'
+    template_name = 'posts/post_detail.html'
 
     def get(self, request,  *args, **kwargs):
 
@@ -50,6 +50,7 @@ class PostCreateView(LoginRequiredMixin, TemplateView):
     def get(self, request,  *args, **kwargs):
 
         if not request.user.is_authenticated:
+            messages.warning(request, 'You are not Authorized')
             return redirect('blog-login')
 
         form = self.form
@@ -78,6 +79,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get(self, request,  *args, **kwargs):
 
         if not request.user.is_authenticated:
+            messages.warning(request, 'You are not Authorized')
             return redirect('blog-login')
 
         form = self.form(instance=get_object_or_404(
@@ -116,15 +118,22 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
     model = Post
-    template_name = 'posts/delete.html'
+    template_name = 'posts/post_delete.html'
 
     def get(self, request,  *args, **kwargs):
 
         if not request.user.is_authenticated:
+            messages.warning(request, 'You are not Authorized')
             return redirect('blog-login')
 
         context = self.get_context_data(**kwargs)
         return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+
+        context = {"object": get_object_or_404(Post, id=self.kwargs['pk'])}
+
+        return context
 
     def post(self, request,  *args, **kwargs):
 
@@ -132,12 +141,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         self_object.delete()
         messages.success(request, 'Blog Post Deleted')
         return redirect('blog-home')
-
-    def get_context_data(self, **kwargs):
-
-        context = {"object": get_object_or_404(Post, id=self.kwargs['pk'])}
-
-        return context
 
     def test_func(self):
 
@@ -223,7 +226,7 @@ class UpdateCommentView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             messages.warning(self.request, 'Comment Not found')
             return redirect('blog-home')
 
-        comments = self.get_object()
+        comments = get_object_or_404(Comments, id=self.kwargs['pk'])
         if self.request.user == comments.author or self.request.user.is_superuser:
             return True
         return False
@@ -266,6 +269,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def handle_no_permission(self):
         comment_object = comment_object = get_object_or_404(
             Comments, id=self.kwargs['pk'])
+        messages.warning(self.request, 'You are not Authorized')
         return redirect('blog-detail',  comment_object.post.id)
 
 
@@ -279,8 +283,9 @@ class LikeunlikeView(LoginRequiredMixin, TemplateView):
         post_object = self_object
         post_id = self.kwargs['pk']
         if post_object.likes.filter(id=request.user.id).exists():
+            messages.success(request, 'User has unliked Blog Post')
             post_object.likes.remove(request.user)
         else:
+            messages.success(request, 'User has liked Blog Post')
             post_object.likes.add(request.user)
-        messages.success(request, 'User has liked Blog Post')
         return redirect('blog-detail', post_id)
