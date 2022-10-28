@@ -16,15 +16,15 @@ class UserCreationForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
-    email = forms.EmailField(required=True)
+    # email = forms.EmailField(required=True)
 
-    def __init__(self, *args, **kwargs):
-        super(UserUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['email'].disabled = True
+    # def __init__(self, *args, **kwargs):
+    #     super(UserUpdateForm, self).__init__(*args, **kwargs)
+    #     self.fields['email'].disabled = True
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'avatar']
+        fields = ['first_name', 'last_name', 'avatar']
 
     def clean_first_name(self,  *args, **kwargs):
         first_name = self.cleaned_data.get("first_name")
@@ -48,14 +48,11 @@ class UserUpdateForm(forms.ModelForm):
 
         if not last_name.isalpha():
             raise forms.ValidationError(
-                "Numbers and Special Characters in First Name is not allowed")
+                "Numbers and Special Characters in Last Name is not allowed")
 
         if len(last_name) > 80:
-            raise forms.ValidationError("First Name Input exceeds max length")
+            raise forms.ValidationError("Last Name Input exceeds max length")
         return last_name
-
-    # def clean_avatar(self, *args, **kwargs):
-    #     avatar = self.cleaned_data.get('avatar')
 
 
 class UserLoginForm(forms.Form):
@@ -68,7 +65,3 @@ class UserLoginForm(forms.Form):
         if not "@" in email or not email.endswith(".com"):
             raise forms.ValidationError("This is not a valid email")
         return email
-
-
-# import pdb
-# pdb.set_trace()

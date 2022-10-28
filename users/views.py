@@ -9,19 +9,15 @@ from django.contrib.auth import authenticate, login, logout
 
 
 class HomeView(TemplateView):
-    #     # import pdb
-    #     # pdb.set_trace()
-
     model = Post
     template_name = 'users/home.html'
     ordering = ['-date_created']
 
     def get_context_data(self, **kwargs):
 
-        context = super(HomeView, self).get_context_data()
-        # this contain the object that the view is operating upon
-
-        context['posts'] = Post.objects.all()
+        context = {
+            'posts': Post.objects.all()
+        }
 
         return context
 
@@ -77,13 +73,12 @@ class UpdateProfileView(TemplateView):
         return render(request, self.template_name, {'u_form': u_form})
 
     def post(self, request,  *args, **kwargs):
-        # import pdb
-        # pdb.set_trace()
         u_form = self.u_form(request.POST, instance=request.user)
+        u_form.instance.email = self.request.user.email
         if u_form.is_valid():
             u_form.save()
-            email = u_form.cleaned_data.get('email')
-            messages.success(request, 'Account Updated! for {}'.format(email))
+            messages.success(request, 'Account Updated! for {}'.format(
+                self.request.user.email))
             return redirect('blog-dashboard')
         else:
             return render(request, self.template_name, {'u_form': u_form})
@@ -118,9 +113,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
 
         context = super(TemplateView, self).get_context_data()
-        # this contain the object that the view is operating upon
-        # user_object = self.object
-        # context['object'] = user_object
 
         context['blogs'] = Post.objects.filter(author=self.request.user.id)
         context['liked_blogs'] = Post.objects.filter(likes=self.request.user)
