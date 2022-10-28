@@ -14,7 +14,6 @@ class PostDetailView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
 
         context = super(PostDetailView, self).get_context_data()
-        # this contain the object that the view is operating upon
         post_object = get_object_or_404(Post, id=self.kwargs['pk'])
         context['object'] = post_object
 
@@ -30,8 +29,6 @@ class PostDetailView(LoginRequiredMixin, TemplateView):
 
 
 class PostCreateView(LoginRequiredMixin, TemplateView):
-    #     # import pdb
-    #     # pdb.set_trace()
     model = Post
     form = PostForm
     template_name = 'posts/post_form.html'
@@ -57,8 +54,7 @@ class PostCreateView(LoginRequiredMixin, TemplateView):
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    #     # import pdb
-    #     # pdb.set_trace()
+
     model = Post
     form = PostForm
     template_name = 'posts/post_form.html'
@@ -73,8 +69,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request,  *args, **kwargs):
-        # import pdb
-        # pdb.set_trace()
+
         post_object = get_object_or_404(Post, id=self.kwargs['pk'])
         form = self.form(request.POST, instance=post_object)
         form.instance.author = post_object.author
@@ -95,8 +90,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    #     # import pdb
-    #     # pdb.set_trace()
+
     model = Post
     template_name = 'posts/delete.html'
 
@@ -130,8 +124,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
 class CreateCommentView(LoginRequiredMixin, TemplateView):
 
-    #     # import pdb
-    #     # pdb.set_trace()
     model = Comments
     form = CommentForm
     template_name = 'posts/post_form_comment.html'
@@ -157,7 +149,7 @@ class CreateCommentView(LoginRequiredMixin, TemplateView):
             return render(request, self.template_name, {'form': form})
 
 
-class UpdateCommentView(LoginRequiredMixin, TemplateView):
+class UpdateCommentView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
     model = Comments
     form = CommentForm
@@ -173,8 +165,7 @@ class UpdateCommentView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request,  *args, **kwargs):
-        # import pdb
-        # pdb.set_trace()
+
         comment_object = get_object_or_404(Comments, id=self.kwargs['pk'])
         form = self.form(request.POST, instance=comment_object)
         form.instance.author = comment_object.author
@@ -186,7 +177,6 @@ class UpdateCommentView(LoginRequiredMixin, TemplateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        # form.instance.post = get_object_or_404(Comments, id=self.request.post.id)
 
         return super().form_valid(form)
 
@@ -196,10 +186,14 @@ class UpdateCommentView(LoginRequiredMixin, TemplateView):
             return True
         return False
 
+    def handle_no_permission(self):
+        comment_object = comment_object = get_object_or_404(
+            Comments, id=self.kwargs['pk'])
+        return redirect('blog-detail',  comment_object.post.id)
+
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    #     # import pdb
-    #     # pdb.set_trace()
+
     model = Comments
     template_name = 'posts/comment_delete.html'
 
